@@ -10,5 +10,5 @@
 
   划分两个分支的规则是：由程序错误导致的异常属于RuntimeException，称为运行时异常；而程序本身没有问题，但像I/O错误这类问题导致的异常属于编译时异常。
 
-Java语言规范将派生于Error类或RuntimeException类的所有异常称为非受查（unchecked）异常，所有其他的异常称为受查（checked）异常。
+Java语言规范将派生于Error类或RuntimeException类的所有异常称为非受检（unchecked）异常，所有其他的异常称为受检（checked）异常。
 
