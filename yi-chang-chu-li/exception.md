@@ -1,8 +1,8 @@
 # 常见异常
 
-* 运行时异常(非受检异常)
+* 运行时异常\(非受检异常\)
 
-    ```java
+  ```java
     public class ExceptionTest{
         //NullPointerExcetion
         @Test
@@ -38,9 +38,9 @@
         }
 
     }
-    ```
+  ```
 
-* 编译时异常(受检异常)
+* 编译时异常\(受检异常\)
 
   ```java
   @Test
@@ -56,4 +56,3 @@
   }
   ```
 
-  
