@@ -11,9 +11,7 @@
 
 ### java同步方法
 
-在java中，通过同步机制解决线程的安全问题，共有三种实现方法。
-
-根据`synchronized`关键字实现同步分为两种：
+在java中，通过同步机制解决线程的安全问题，共有三种实现方法。根据`synchronized`关键字实现同步有两种，第三种为`Lock`实现。
 
 1. 同步代码块
 
@@ -39,10 +37,6 @@
    * 同步方法需要同步监视器，不需要显示声明
    * 实现多线程，`synchronized`修饰非静态方法，同步监视器是`this`；如果使用继承实现多线程，`synchronized`修饰静态方法，同步监视是`object.class`
 
-从jdk5.0开始，java提供锁对象来实现同步。`java.util.concurrent.locks.Lock`接口是控制多个线程对共享资源进行访问的工具。
-
-`ReentrantLock`类实现`Lock`，在线程安全的控制中，经常被使用。
-
 3. Lock锁
 
    ```java
@@ -59,6 +53,10 @@
        }
    }
    ```
+
+从jdk5.0开始，java提供锁对象来实现同步。`java.util.concurrent.locks.Lock`接口是控制多个线程对共享资源进行访问的工具。
+
+`ReentrantLock`类实现`Lock`，在线程安全的控制中，经常被使用。
 
 `synchronized`和`Lock`的异同：
 
