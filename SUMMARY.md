@@ -24,6 +24,7 @@
     * [线程的生命周期](doc/concurrence/lifecycle.md)
     * [线程的同步](doc/concurrence/synchronize.md)
     * [线程的通信](doc/concurrence/communicate.md)
+    * [面试题](doc/concurrence/interview.md)
 * [常用类](doc/common_class/README.md)
 * [枚举类&注解](doc/enum/README.md)
 * [集合](doc/set/README.md)
