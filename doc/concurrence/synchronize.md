@@ -9,7 +9,11 @@
 
 线程安全问题可以通过使同一时刻只有一个线程能够操作数据的方法得到解决。
 
-在java中，通过同步机制解决线程的安全问题，根据同步的位置可以分为两种：
+### java同步方法
+
+在java中，通过同步机制解决线程的安全问题，共有三种实现方法。
+
+根据`synchronized`关键字实现同步分为两种：
 
 1. 同步代码块
 
@@ -34,3 +38,36 @@
 
    * 同步方法需要同步监视器，不需要显示声明
    * 实现多线程，`synchronized`修饰非静态方法，同步监视器是`this`；如果使用继承实现多线程，`synchronized`修饰静态方法，同步监视是`object.class`
+
+从jdk5.0开始，java提供锁对象来实现同步。`java.util.concurrent.locks.Lock`接口是控制多个线程对共享资源进行访问的工具。
+
+`ReentrantLock`类实现`Lock`，在线程安全的控制中，经常被使用。
+
+3. Lock锁
+
+   ```java
+   class MyThread implements Runnable{
+       private ReentrantLock lock = new ReentrantLock();
+       public void run(){
+           // code
+           try{
+               lock.lock();
+               //code sharing data for running
+           }finally{
+               lock.unlock();
+           }
+       }
+   }
+   ```
+
+   
+
+### 死锁问题
+
+> 死锁：不同线程占用对方需要的同步资源，都在等待对方放弃自己需要的同步资源，这种情况称为死锁。
+
+解决方法：
+
+1. 避免锁的嵌套
+2. 减少同步资源的定义
+3. 算法
