@@ -13,9 +13,7 @@ JVM允许程序执行多线程，用户可以借助`java.lang.Thread`类实现�
    class MyThread extends Thread{
        //2.ovrride run function of Thread
        public void run(){
-           for(int i=0;i<100;i++){
-               System.out.println(i);
-           }
+           //code for running
        }
    }
    
@@ -25,6 +23,13 @@ JVM允许程序执行多线程，用户可以借助`java.lang.Thread`类实现�
            MyThread t1 = new MyThread();
            //4.start the thread
            t1.start();// start()will start the thread and then make the thread execute the run()
+           
+           //another choice,use anonymous class to replace inheritance
+           new Thread{
+               public void run(){
+                   //code for running
+               }
+           }.start();
        }
    }
    ```
@@ -32,23 +37,48 @@ JVM允许程序执行多线程，用户可以借助`java.lang.Thread`类实现�
    * 不能通过直接调用`run()`方法启动线程
    * 线程只能启动一次
 
-2. 匿名子类方式
+2. 实现`Runnable`接口方式
 
    ```java
+   //1.create a class which implements Runnable
+   class MyThread1 implements Runnable{
+       //2.complete the run method
+       public void run(){
+           //code for running
+       }
+   }
+   
    public class ThreadTest{
        public static void main(String[] args){
-           new Thread{
-               public void run(){
-                   for(int i=0;i<100;i++){
-                       System.out.println(i);
-                   }
-               }
-           }.start();
+           //3.create an object of the class
+           MyThread1 t1 = new MyThread1();
+           //4.transfer the object to Thread constructor
+           new Thread(t1).start();//5.start thread
+           
+           //another choice,using lambda expression to replace the interface
+           new Thread(()->{
+               //code here for executing
+           }).start();
        }
    }
    ```
 
-### Thread方法
+在开发中，一般使用第二种方式实现多线程，原因如下：
+
+1. 如果使用第一种继承方式，由于java单继承机制，要求类的父类只能是`Thread`，但是该类可能存在自身的继承链，`Thread`与其没有必然的`is-a`关系。
+2. 如果使用第二种接口方式，由于同一个对象可以多次被传入`Thread`构造器中，多个线程共同调用同一个对象的`run`方法，实现了多个线程数据共享的功能。
+
+两种方法的联系：
+
+`Thread`类本身实现了`Runnable`接口。
+
+> public class Thread implements Runnable
+
+两种方法都需要重写`run`方法，将线程的执行逻辑写在`run`方法中。
+
+### 线程使用
+
+#### Thread方法
 
 | 常用方法        | 方法说明                                                     |
 | --------------- | ------------------------------------------------------------ |
@@ -62,3 +92,19 @@ JVM允许程序执行多线程，用户可以借助`java.lang.Thread`类实现�
 | sleep()         | 使线程阻塞固定时间                                           |
 | isAlive()       | 判断当前线程是否存活                                         |
 
+#### 线程调度
+
+线程调度有时间片和抢占式两种。
+
+Java中同优先级线程组成队列，使用时间片策略；对于不同优先级线程，使用抢占式策略。
+
+* 线程优先级
+
+  存在10个等级(1-10)，10的优先级最高，默认优先级5
+
+  线程创建时继承父类的优先级，低优先级只是调度概率低。
+
+* 方法调用
+
+  * `getPriority()`：返回线程优先级
+  * `setPriority()`：设置线程优先级
