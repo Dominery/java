@@ -68,6 +68,8 @@
 
    `Calendar`是抽象类，用于完成日期字段之间相互操作的功能。
 
+   获取月份时：一月对应0；获取星期时：周日对应1
+
    * 实例化
 
      调用子类`GregorianCaiendar`的构造器
@@ -85,4 +87,76 @@
      `getTime()`：日历类-->Date
 
      `setTime()`：Date-->日历类
+
+这些API遇到的共同问题是：
+
+1. 可变性：日期和时间应该是不可变的
+2. 偏移性：Date中年份从1900开始，月份都从0开始
+3. 格式化：格式化只对Date有用
+
+### jdk8中的日期时间API
+
+1. `LocalDate`、`LocalTime`、`LocalDateTIme`
+
+   它们的实例是不可变的对象，分别表示使用 ISO-8601日历系统的日期、时间、日期和时间。
+
+   它们提供了简单的本地日期或时间，并不包含当前的时间信息，也不包含与时区相关的信息
+
+   * 实例化
+   
+       `now()`：返回当前日期时间的对象
+   
+       `of()`：返回指定日期时间的对象
+       
+   * 方法
+   
+       `get`：获取日期时段的信息
+   
+       `with`：返回设置日期时段的对象
+   
+       `plus`：返回添加日期时段的对象
+   
+       `minus`：返回减去日期时段的对象
+   
+2. `Instant`
+
+   用来记录应用程序中的事件时间戳
+
+   * 实例化
+
+     `now()`：返回默认UTC时区的Instant类的对象
+
+     `offEpochMilli()`：通过给定的时间戳创建对象
+
+   * 方法
+
+     `atOffset(ZoneOffset offset)`：结合即时的偏移来创建一个 OffsetDateTime
+
+     `toEpochMilli()`：获取(UTC)时间戳
+
+3. `DateTimeFormatter`
+
+   格式化并解析日期时间
+
+   * 实例化
+
+     1. 预定义的标准格式
+     2. 本地化相关的格式
+     3. 自定义的格式
+
+     ```java
+     LocalDateTime now = LocalDateTime.now();
+     
+     DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;//first method
+     formatter.format(now);
+     formatter.parse("2021-03-13T08:12:05.361Z");
+     
+     DateTimeFormatter formatter1 = DateTImeFormatter.ofLocalLizedDateTime(FormatStyle.SHORT);//seconde method
+     formatter1.format(now);
+     
+     DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+     formatter2.format(now);
+     ```
+
+     
 
