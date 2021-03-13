@@ -50,21 +50,39 @@
 
    允许对`Date`进行格式化和解析：日期-->文本、文本-->日期。
 
-   * 格式化和解析
+   ```java
+   //use the default constructor
+   SimpleDateFormate sdf = new SimpleDateFormate();
+   Date date = new Date();
+   sdf.format(date);
+   
+   String s1 = "20-1-23 下午3:00";
+   Date date1 = sdf.parse(s1);
+   
+   //y:year M:month d:day h:hour m:minute s:second
+   SimpleDateFormate sdf1 = new SimpleDateFormate("yyyy-MM-dd hh:mm:ss");
+   sdf.format(date);
+   ```
 
-     ```java
-     //use the default constructor
-     SimpleDateFormate sdf = new SimpleDateFormate();
-     Date date = new Date();
-     sdf.format(date);
-     
-     String s1 = "20-1-23 下午3:00";
-     Date date1 = sdf.parse(s1);
-     
-     //y:year M:month d:day h:hour m:minute s:second
-     SimpleDateFormate sdf1 = new SimpleDateFormate("yyyy-MM-dd hh:mm:ss");
-     sdf.format(date);
-     ```
+5. `java.util.Calendar`
 
-     
+   `Calendar`是抽象类，用于完成日期字段之间相互操作的功能。
+
+   * 实例化
+
+     调用子类`GregorianCaiendar`的构造器
+
+     使用`getInstance()`方法
+
+   * 常用方法
+
+     `get()`：获取日期字段信息
+
+     `set()`
+
+     `add()`
+
+     `getTime()`：日历类-->Date
+
+     `setTime()`：Date-->日历类
 
