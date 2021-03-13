@@ -1,5 +1,11 @@
 # 字符串相关的类
 
+处理字符串的类主要有`String`、`StringBuffer`、`StringBuilder`。它们底层都使用char[]存储，不同如下：
+
+* String：不可变的字符序列
+* StringBuffer：可变的字符序列、线程安全、效率低
+* StringBuilder：可变的字符序列、线程不安全、效率高
+
 ### String的使用
 
 * 注意要点
@@ -58,3 +64,20 @@
         * `String`-->`byte[]`(encode)：调用`String`的`getBytes()`方法
         * `byte[]`-->`String`(decode)：调用`String`的构造器
 
+### StringBuffer与StringBuilder的使用
+
+`StringBuffer`、`StringBuilder`是可变的字符序列。
+
+如果添加的数据底层数组空间不够，需要扩容底层的数组。默认情况下，扩容为原来容量的2倍+2，同时将原数组的元素赋值到新数组中。
+
+* 源码分析
+
+  ```java
+  String s1 = new String("abc"); // char[] value = new char[]{'a','b','c'}
+  
+  StringBuffer sb1 = new StringBuffer(); // char[] value = new char[16];
+  sb1.append('a'); //value[0] = 'a';
+  StringBuffer sb2 = new StringBuffer("abc");// char[] value = new char["abc".length+16]
+  ```
+
+  
