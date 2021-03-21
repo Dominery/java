@@ -33,7 +33,7 @@
     * [面试题](doc/common_class/interview.md)
 * [枚举类&注解](doc/enum/README.md)
     * [枚举类的使用](doc/enum/enum.md)
-    * [注解的使用](doc/enum/anotatation.md)
+    * [注解的使用](doc/enum/anotation.md)
 * [集合](doc/set/README.md)
 * [泛型](doc/generic/README.md)
 * [IO流](doc/io/README.md)
