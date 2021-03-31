@@ -1,2 +1,7 @@
 # Collections工具类
 
+Collections 是一个操作Set、List和Map等集合的工具类。
+
+Collections中提供了一系列静态方法对集合元素进行排序、查询和修改等操作。
+
+Collections类提供多个synchronizedxxx()方法，该方法可将指定集合包装成线程同步的集合，从而可以解决多线程并发访问集合的线程安全问题。

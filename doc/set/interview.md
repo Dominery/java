@@ -11,3 +11,7 @@
    > ​	Vector是List接口的古老实现类，线程安全、效率低，底层使用Object[] 存储
    >
    > ​	LinkedList底层使用双向链表存储，如果频繁插入和删除，其效率高
+
+2. Collection和Collections的区别？
+
+   > Collection是集合的接口，Collections是操作Collection的工具类。
