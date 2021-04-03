@@ -15,11 +15,13 @@ static {
 
 如果泛型类型声明为`G<? extends ClassType>`，那么该泛型类型为子类型通配符，可以匹配所有`ClassType`的子类的泛型对象，可以使用方法的返回值，但不能为方法提供参数。
 
-> \<? extends ClassType\>必然是ClassType的子类，所以借助多态，其返回值可以用ClassType类型的引用接收，而提供的参数不一定为\<? extends ClassType\>的子类，方法体内无法接收。
+> \<? extends ClassType\>必然是ClassType的子类，所以借助多态，其返回值可以用ClassType类型的引用接收，而提供的参数类型是ClassType的子类但不一定为\<? extends ClassType\>的子类，方法体内无法接收。
 
 ### 超类型限定通配符
 
 如果泛型类型声明为`G<? super ClassType>`，那么该泛型类型为超类型通配符，可以匹配所有`ClassType`的父类的泛型对象，可以为方法提供参数，但不能使用返回值。
+
+> \<? super ClassType\>是ClassType的父类且无法确定其类型，其返回值只能用Object类型的引用接收，而提供的参数如果为ClassType的子类，则其一定为\<? super ClassType\>的子类，方法体内能够接收。
 
 ### 无限定通配符
 
