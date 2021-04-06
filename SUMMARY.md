@@ -48,6 +48,7 @@
 * [IO流](doc/io/README.md)
     * [File类的使用](doc/io/file.md)
     * [流的分类](doc/io/sort.md)
+    * [其他流](doc/io/other.md)
     * [路径相关类](doc/io/path.md)
 * [网络编程](doc/network/README.md)
 * [反射](doc/reflection/README.md)
