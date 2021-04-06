@@ -152,3 +152,36 @@ try {
 
 #### 转换流
 
+提供字节流和字符流之间的转换。
+
+* InputStreamReader:将一个字节的输入流转化为字符的输入流——解码过程
+* OutputStreamWriter:将一个字符的输出流转换为字节的输出流——编码过程
+
+```java
+InputStreamReader isr = null;
+OutputStreamWriter osw = null;
+try {
+    isr = new InputStreamReader(new FileInputStream("hello1.txt"), "UTF-8");
+    osw = new OutputStreamWriter(new FileOutputStream("hello2.txt"), "GBK");
+
+    char[] chars = new char[5];
+    int len;
+    while((len=isr.read(chars))!=-1){
+        osw.write(chars,0,len);
+    }
+} catch (IOException exception) {
+    exception.printStackTrace();
+} finally {
+    try {
+        if(isr!=null) isr.close();
+    } catch (IOException exception) {
+        exception.printStackTrace();
+    }
+    try {
+        if(osw!=null)osw.close();
+    } catch (IOException exception) {
+        exception.printStackTrace();
+    }
+}
+```
+
