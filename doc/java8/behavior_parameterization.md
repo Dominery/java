@@ -1,6 +1,10 @@
 # java行为参数化
 
-我们即使还未见过高质量代码的实现，但依旧可以想象出它的模样——灵活性、可维护性、可拓展性、低耦合。java中的行为参数化提供了一条通往优雅代码的路径，如果你有对代码质量的追求，那么请和我一起探寻路的尽头。
+java8中的行为参数化，解决了数据处理需求变化的问题，通过将一个写定的代码块作为参数传递给另一方法，则该方法的行为就基于被参数化了的代码块。
+
+如果没有已经写定的方法，使用行为参数化，需要大量的模板代码，而Lambda则用于解决这个问题。
+
+该节给出了代码示例，讲解如何对代码改进，应对不断变化的需求。
 
 ### 辅助代码
 
@@ -73,7 +77,7 @@ public static ArrayList<Person> selectOldPeople(ArrayList<Person>people){
 }
 ```
 
-你知道这代码的实现很烂，如果查找的人不要求65岁，岂非要重复修改，所以你加了一个参数`int age` 替换了65。可是没想到接下来，你需要查找**姓“王”的人**，为了避免复制黏贴，你心想也许可以加个`String name`参数，可是为了区别是查找年龄还是姓名，你又不得不添加了`boolean flag`参数。
+这代码的实现很烂，如果查找的人不要求65岁，需要重复修改，因此加了一个参数`int age` 替换了65。接下来需求开始变化，需要从代码中查找**姓“王”的人**，为了避免复制黏贴，通过加个`String name`参数，添加`boolean flag`参数区别是查找年龄还是姓名来解决。
 
 你的最终代码是这样的：
 
@@ -91,7 +95,7 @@ public static ArrayList<Person> selectPeople(ArrayList<Person>people,int age,Str
 
 #### 2. 行为参数化
 
-不，也许我可以把判断的逻辑与迭代分开，你心想。于是你设计了一个接口，从而令`selectPeople`方法只需要两个参数。
+java的行为参数化允许你把判断的逻辑与迭代分开，将判断的逻辑作为方法值传入。于是设计了一个接口，从而令`selectPeople`方法只需要两个参数。
 
 ```java
 interface PersonPredict{
@@ -110,11 +114,11 @@ public static ArrayList<Person> selectPeople(ArrayList<Person> people,PersonPred
 }
 ```
 
-可是如何传入参数呢？你想到了以下方案：
+传入参数有以下方案：
 
 1. 类实例化传参
 
-   每次需要一个选择逻辑，你先定义相应的类，再将类实例化，传给`selectPeople`方法。
+   每次需要一个选择逻辑，先定义相应的类，再将类实例化，传给`selectPeople`方法。
 
    ```java
    class PersonSelectedByName implements PersonPredict{
@@ -124,11 +128,11 @@ public static ArrayList<Person> selectPeople(ArrayList<Person> people,PersonPred
    }
    ```
 
-   这样的实现解决了代码的复用性问题，无论你的需求是什么，只要额外定义一个类，而无需改变原有代码。可是这种只实例化一次的类，给出类的定义，真的有必要吗？于是你想到了如下方法。
+   这样的实现解决了代码的复用性问题，无论需求是什么，只要额外定义一个类，而无需改变原有代码。可是这种只实例化一次的类，给出类的定义，真的有必要吗？
 
 2. 匿名类
 
-   我需要类的时候直接实例化它岂不是完美？你实现了下述代码：
+   需要类的时候直接实例化它。
 
    ```java
    //3. also using the select method 2 but anonymity class
@@ -139,36 +143,35 @@ public static ArrayList<Person> selectPeople(ArrayList<Person> people,PersonPred
    }));
    ```
 
-   然而这种实现似乎也重复了很多，为了一个方法，你不得不写许多格式化代码。还有其他方案吗？
+   然而这种实现也重复了很多，为了一个方法，不得不写许多格式化代码。
 
-3. lanbda表达式
+3. lambda
 
-   你逐渐看到了路的尽头，将一个方法作为参数。
+   将Lambda作为参数传给方法。
 
    ```java
    //4. using lambda expression as the arguments
    System.out.println(selectPeople(people,person->                    person.getTel().startsWith("130")&&person.getAge()>30));
    ```
 
-   代码变得更加简单与优雅，似乎你已经走到了路的尽头。别急，如果你需要的选择不是`Person`而是`Car`呢？
+### 泛型
 
-4. 泛型
+通过使用泛型，使集合中可以是其他类型的对象，增加了代码的适用性。
 
-   ```java
-   public static <T>List<T> filter(List<T> list,Predict<T>p){
-       List<T> result = new ArrayList<>();
-       for(T e:list){
-           if(p.test(e)){
-               result.add(e);
-           }
-       }
-       return result;
-   }
-   // 5. make more abstract interface which can be offered any class
-   interface Predict<T>{
-       boolean test(T t);
-   }
-   ```
+```java
+public static <T>List<T> filter(List<T> list,Predict<T>p){
+List<T> result = new ArrayList<>();
+for(T e:list){
+if(p.test(e)){
+result.add(e);
+}
+}
+return result;
+}
+// 5. make more abstract interface which can be offered any class
+interface Predict<T>{
+boolean test(T t);
+}
+```
 
-   现在，你终于看到了，不论是`Person`还是`Car`类，只要它是列表中的元素，只要你的需求是作出选择，这个代码实现能够完美契合后来的变动。
 
