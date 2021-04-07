@@ -54,6 +54,7 @@
 * [反射](doc/reflection/README.md)
 * [新特性](doc/attributes/README.md)
 * [java8](doc/java8/README.md)
+    * [行为参数化](doc/java8/behavior_parameterization.md)
     * [Lambda](doc/java8/lambda.md)
     * [流](doc/java8/stream/README.md)
         * [使用流](doc/java8/stream/use.md)
