@@ -107,7 +107,7 @@ public static ArrayList<Person> selectPeople(ArrayList<Person> people,PersonPred
 
    ```java
    //4. using lambda expression as the arguments
-   System.out.println(selectPeople(people,person->                    person.getTel().startsWith("130")&&person.getAge()>30));
+   System.out.println(selectPeople(people,person->person.getTel().startsWith("130")&&person.getAge()>30));
    ```
 
 ### 泛型
