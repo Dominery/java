@@ -60,6 +60,7 @@
     * [流](doc/java8/stream/README.md)
         * [使用流](doc/java8/stream/use.md)
         * [流收集数据](doc/java8/stream/collect.md)
+        * [并行流](doc/java8/stream/concuren.md)
 * [Spring](doc/spring/README.md)
     * [IOC](doc/spring/ioc.md)
     * [Bean](doc/spring/bean.md)
