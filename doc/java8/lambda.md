@@ -24,7 +24,7 @@ Lambda表达式有三个部分。
 
 #### 使用场合
 
-可以在方法中的函数式接口参数上使用Lambda表达式。Lambda表达式能够直接以内联的形式为函数式接口的抽象方法提供实现，并把整个表达式作为函数式接口的实例。
+Lambda表达式只能在接收函数式接口的地方使用。Lambda表达式能够直接以内联的形式为函数式接口的抽象方法提供实现，并把整个表达式作为函数式接口的实例。
 
 Lambda表达式的参数列表及返回类型必须与函数式接口的抽象方法的签名一致。
 
@@ -49,6 +49,67 @@ public interface InputProcessor{
 ```
 
 任何符合()->{}签名的Lambda表达式都可以作为InputProcessor参数作为传递。
+
+#### Lambda复合
+
+java8的许多函数式接口提供了默认方法用以复合Lambda表达式。
+
+* 比较器复合
+
+  Comparator.comparing，根据提取用于比较的键值的Function来返回一个Comparator。
+
+  1. 逆序
+
+     ```java
+     comparing(Person::getAge).reversed();
+     ```
+
+  2. 比较器链
+
+     ```java
+     comparing(Person::getAge)
+         .reversed()
+         .thenComparing(Person::name)
+     ```
+
+* 谓词复合
+
+  谓词接口包括三个方法：negate、and和or，从而可以重用已有的Predicate来创建更复杂的谓词。
+
+  1. 取反
+
+     ```java
+     Predicate<Person> agedPerson = person->person.getAge()>65;
+     Predicate<Person> notAgedPerson = agedPerson.negate();
+     ```
+
+  2. 逻辑与
+
+     ```java
+     Predicate<Person> agedAndTallPerson = agedPerson.
+         and(person->person.getHeight()>180);
+     ```
+
+  3. 逻辑或
+
+     ```java
+     Predicate<Person> agedOrTallPerson = agedPerson.
+         or(person->person.getHeight()>180);
+     ```
+
+* 函数复合
+
+  Function接口为此配了andThen和compose两个默认方法，它们都会返回Function的一个实例，从而可以实现该接口的Lambda表达式复合。
+
+  1. andThen
+
+     andThen方法要求Function对应的Lambda表达式传入参数的类型与返回值的类型相同。
+  
+  2. compose
+  
+     该方法处理表达式的顺序与andThen相反。
+
+ 
 
 ### java8对于Lambda的支持
 
@@ -132,3 +193,6 @@ Persons.sort(Comparing(Person::getAge));
 #### 构造函数引用
 
 对于一个现有构造函数，可以利用它的名称和关键字new来创建它的一个引用：ClassName::new。
+
+如果是无参构造函数，可以使用Supplier\<T\>接口。
+
