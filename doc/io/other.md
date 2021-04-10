@@ -75,3 +75,8 @@ public void testDataInputStream(){
 }
 ```
 
+### 随机存取文件流
+
+RandomAccessFile类不继承自四个抽象基类，可以进行输入和输出操作，并且有文件指针的功能，可以自文件中指定的位置开始操作。
+
+RandomAccessFile可以用来实现多线程断点下载的功能。
