@@ -10,6 +10,8 @@
 >
 > 诸如sort或distinct等操作从流中排序和删除重复项时都需要知道先前的历史，内部状态是无界的。
 
+## 流的操作
+
 ### 筛选和切片
 
 筛选与切片都是从流中选取一些元素的操作。
@@ -48,7 +50,7 @@
 
 2. 流的扁平化
 
-   如果传入流的元素是容器，而返回流希望是传入流中容器的元素，可以使用flatMap方法进行扁平化。
+   如果传入流的元素是容器或流，而返回流希望是传入流中容器或流的元素，可以使用flatMap方法进行扁平化。
 
    flapMap方法接收流作为参数，其返回流是将这些接收到的流汇聚在一起的流。
 
@@ -108,3 +110,85 @@
    ```
 
 相比于逐步迭代求和，使用reduce的好处在于，这里的迭代被内部迭代抽象掉了，这让内部实现得以选择并行执行reduce操作。
+
+## 特殊的流
+
+### 数值流
+
+如果流中的元素是数值，那么流操作会涉及到装箱拆箱，损耗性能，可以通过将流转化为数值流解决这个问题。
+
+#### 原始类型流特化
+
+Stream API提供了原始类型流特化接口将流转化为数值流(特化流)，数值流提供专门支持处理原始类型的方法。
+
+1. 映射到数值流
+
+   mapToInt、mapToDouble、mapToLong方法接收Stream<T\>返回一个特化流。
+
+2. 转回非特化流
+
+   使用boxed()方法或mapToObj()方法会将特化流转回一般流
+
+3. Optional
+
+   对于三种类型的数值流，Optional类提供相应的原始类型特化类：OptionalInt、OptionalDouble、OptionalLong。
+
+#### 数值范围
+
+Java 8引入了两个可以用于IntStream和LongStream的静态方法，帮助生成这种范围：range和rangeClosed。这两个方法都是第一个参数接受起始值，第二个参数接受结束值。但range是不包含结束值的，而rangeClosed则包含结束值。
+
+### 构建流
+
+流不仅可以通过集合与数值范围生成，还可以从值序列、数组、文件、生成函数创建流。
+
+1. 值序列
+
+   静态方法Stream.of，通过显式值创建一个流。
+
+   ```java
+   Stream<Integer> intstream = Stream.of(1,2,3,4,5,6);
+   ```
+
+2. 数组
+
+   静态方法Arrays.stream从数组创建一个流。
+
+   ```java
+   int[] nums = {1,2,3,4,5,6};
+   Stream<Integer> intstream = Arrays.stream(nums);
+   ```
+
+3. 文件
+
+   java.nio.file.Files中的很多静态方法都会返回一个流。
+
+4. 函数生成流
+
+   Stream API提供了两个静态方法来从函数生成流：Stream.iterate和Stream.generate。
+
+   * 迭代
+
+     求斐波那契数列
+
+     ```java
+     Stream.iterate(new int[]{0,1},
+                    b->new int[]{b[1],b[0]+b[1]}
+                   ).
+         limit(10).
+         mapToInt(b->b[1]);
+     ```
+
+   * 生成
+
+     generate不是依次对每个新生成的值应用函数的。它接受一个Supplier<T\>类型的Lambda提供新的值。
+
+     Supplier<T\>供应源不一定是无状态的，用户可以创建存储状态的供应源，它可以修改状态，并在为流生成下一个值时使用。
+
+     随机数流生成
+
+     ```java
+     Stream.iterate(Math::random).
+         limit(20);
+     ```
+
+     
