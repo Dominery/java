@@ -88,7 +88,7 @@ public static ArrayList<Person> selectPeople(ArrayList<Person> people,PersonPred
 
 2. 匿名类
 
-   需要类的时候直接实例化它。
+   需要类的时候直接实例化它。设计匿名内部类的目的，就是为了方便Java程序员将代码作为数据传递。
 
    ```java
    //3. also using the select method 2 but anonymity class
