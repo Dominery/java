@@ -70,6 +70,7 @@
         * [并行流](doc/java8/stream/concuren.md)
     * [Optional](doc/java8/optional.md)
     * [组合式异步编程](doc/java8/completablefuture.md)
+    * [函数式编程](doc/java8/functional_programming/README.md)
 * [Spring](doc/spring/README.md)
     * [IOC](doc/spring/ioc.md)
     * [Bean](doc/spring/bean.md)
