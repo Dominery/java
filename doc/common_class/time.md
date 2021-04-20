@@ -130,14 +130,23 @@ jak8中提供的日期-时间对象(LocalDateTime、LocalDate、LocalTime、Inst
         date.get(ChronoFiel.MONTH_OF_YEAR);
         ```
 
-2. LocalDateTime
+2. 日历转换
+
+   ISO-8601日历系统是世界文明日历系统的事实标准。但是，Java 8中另外还提供了4种其他的日历系统。这些日历系统中的每一个都有一个对应的日志类，分别是ThaiBuddhistDate、MinguoDate、JapaneseDate以及HijrahDate。所有这些类以及LocalDate都实现了ChronoLocalDate接口，能够对公历的日期进行建模。
+   
+   ```java
+   LocalDate date = LocalDate.of(2020,Monty.MAY,25);
+   JapaneseDate jpDate = JapaneseDate.from(date);
+   ```
+   
+3. LocalDateTime
 
    LocalDateTime是LocalDate和LocalTime的合体，同时表示日期和时间。
-   
+
    * 创建方式
-   
+
      可以直接创建，也可以通过合并日期和时间对象构造。
-   
+
      ```java
      LocalDateTime dt1 = LocalDateTime.of(2021,Month.JUNE,30,12,0,0);
      LocalDateTime dt2 = LocalDateTime.of(date,time);
@@ -145,12 +154,12 @@ jak8中提供的日期-时间对象(LocalDateTime、LocalDate、LocalTime、Inst
      LocalDateTime dt4 = date.atTime(time);
      LocalDateTime dt5 = time.atDate(date);
      ```
-   
+
      向LocalDate传递一个时间对象，或者向LocalTime传递一个日期对象的方式，可以创建一个LocalDateTime对象。
-   
+
      可以使用toLocalDate或者toLocalTime方法，从LocalDateTime中提取LocalDate或者LocalTime组件
-   
-3. Instant
+
+4. Instant
 
    java.time.Instant类对时间建模的方式，基本上它是以Unix元年时间（传统的设定为UTC时区1970年1月1日午夜时分）开始所经历的秒数进行计算。
 
@@ -178,23 +187,22 @@ jak8中提供的日期-时间对象(LocalDateTime、LocalDate、LocalTime、Inst
   
 * Duration类和Period类共享了很多相似的方法
 
-  |      |      |      |
-  | ---- | ---- | ---- |
-  |      |      |      |
-  |      |      |      |
-  |      |      |      |
-  |      |      |      |
-  |      |      |      |
-  |      |      |      |
-  |      |      |      |
-  |      |      |      |
-  |      |      |      |
-  |      |      |      |
-  |      |      |      |
-  |      |      |      |
-  |      |      |      |
+  | 方法名       | 静态方法？ | 说明                                                 |
+  | ------------ | ---------- | ---------------------------------------------------- |
+  | between      | Y          | 创建两个时间点之间的interval                         |
+  | from         | Y          | 由一个临时时间点创建interval                         |
+  | of           | Y          | 由它的组成部分创建interval实例                       |
+  | parse        | Y          | 由字符串创建interval实例                             |
+  | addTo        | N          | 创建interval副本，并将其叠加到某个指定的temporal对象 |
+  | get          | N          | 读取该interval状态                                   |
+  | isNagative   | N          | 检查该interval是否为负值                             |
+  | isZero       | N          | 检查该interval是否为0                                |
+  | minus        | N          | 通过减去一定时间创建该interval副本                   |
+  | multipliedBy | N          | 将interval值乘以某个标量创建该interval副本           |
+  | negated      | N          | 以忽略某个时长的方式创建interval副本                 |
+  | plus         | N          | 以增加某个指定时长的方式创建interval副本             |
+  | subtractFrom | N          | 从指定的temporal对象减去该interval                   |
 
-  
 
 #### 操纵解析时间
 
@@ -220,11 +228,11 @@ jak8中提供的日期-时间对象(LocalDateTime、LocalDate、LocalTime、Inst
 
    对于最常见的用例，日期和时间API已经提供了大量预定义的TemporalAdjuster。
 
-
-
 #### 打印输出及解析时间对象
 
 DateTimeFormatter用于格式化并解析日期时间。和老的java.util.DateFormat相比较，所有的DateTimeFormatter实例都是线程安全的。
+
+DateTimeFormatter实例都能用于以一定的格式创建代表特定日期或时间的字符串，也可以通过解析代表日期或时间的字符串重新创建该日期对象。
 
 * 创建格式器
 
@@ -258,5 +266,59 @@ LocalDateTime now = LocalDateTime.now();
   formatter2.format(now);
   ```
   
-  
+
+#### 处理不同时区
+
+时区的处理是新版日期和时间API新增加的重要功能。新的java.time.ZoneId类是老版java.util.TimeZone的替代品。ZoneId类也是无法修改的。
+
+1. 创建
+
+    时区是按照一定的规则将区域划分成的标准时间相同的区间。在ZoneRules这个类中包含了40个这样的实例。你可以简单地通过调用ZoneId的getRules()得到指定时区的规则。每个特定的ZoneId对象都由一个地区ID标识。
+
+    ```java
+    ZoneId romeZone = ZoneId.of("Europe/Rome");
+    ```
+
+    > 地区ID都为“{区域}/{城市}”的格式，这些地区集合的设定都由英特网编号分配机构（IANA）的时区数据库提供。
+    
+2. 使用
+
+    可以将ZoneId对象与LocalDate、LocalDateTime或者是Instant对象整合起来，构造为一个ZonedDateTime实例，它代表了相对于指定时区的时间点。
+
+    ```java
+    LocalDate date = LocalDate.of(2020,Month.May,25);
+    ZonedDateTime zdt1 = date.atStartOfDay(romeZone);
+    
+    LocalDateTime dateTime = LocalDateTime.of(2020,Month.May,25,0,0);
+    ZonedDateTime zdt2 = dateTime.atZone(romeZone);
+    ```
+
+    通过ZonId，可以将LocalDateTime和Instant相互转换。
+
+    ```java
+    Instant inst = dateTime.toInstant(romeZone);
+    LocalDateTime time = LocalDateTime.ofIntant(inst,romeZone);
+    ```
+
+3. 其他方式
+
+    另一种比较通用的表达时区的方式是利用当前时区和UTC/格林尼治的固定偏差。这种情况下，可以使用ZoneOffset类，它是ZoneId的一个子类，表示的是当前时间和伦敦格林尼治子午线时间的差异。
+
+    ```java
+    ZoneOffset newYorkOffset = ZoneOffset.of("-05:00");
+    ```
+
+    >使用这种方式定义的ZoneOffset并未考虑任何日光时的影响，所以在大多数情况下，不推荐使用。
+
+
+
+
+
+
+
+
+
+
+
+
 
