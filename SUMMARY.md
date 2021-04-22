@@ -71,6 +71,7 @@
     * [Optional](doc/java8/optional.md)
     * [组合式异步编程](doc/java8/completablefuture.md)
     * [函数式编程](doc/java8/functional_programming/README.md)
+        * [函数式编程技巧](doc/java8/functional_programming/method.md)
 * [Spring](doc/spring/README.md)
     * [IOC](doc/spring/ioc.md)
     * [Bean](doc/spring/bean.md)

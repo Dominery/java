@@ -1,6 +1,6 @@
 # Optional
 
- null引用在历史上被引入到程序设计语言中，目的是为了表示变量值的缺失。对null调用方法或者数据段会引发NullPointerException，为了避免这个异常，需要对获得的对象引用做检查，检查代码牺牲了代码本身的可读性，java.util.Optional\<T>的引入是为了解决这个问题。
+ null引用在历史上被引入到程序设计语言中，目的是为了表示变量值的缺失。对null调用方法或者数据段会引发NullPointerException，为了避免这个异常，需要对获得的对象引用做检查，检查代码牺牲了代码本身的可读性，java.util.Optional&lt;T&gt;的引入是为了解决这个问题。
 
 ### null带来的问题
 
