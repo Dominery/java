@@ -45,3 +45,15 @@ Arrays.sort(arr,new Comaparator<String>(){
 })
 ```
 
+#### 方法
+
+| 方法           | 静态？ | 说明                                                         |
+| -------------- | ------ | ------------------------------------------------------------ |
+| comparingInt等 | Y      | 工作方式和compa-ring类似，但接受的函数特别针对某些基本数据类型 |
+| naturalOrder   | Y      | 对Comparable对象进行自然排序，返回一个Comparator对象。       |
+| nullsFirst     | Y      | 对空对象和非空对象进行比较                                   |
+| reverseOrder   | Y      | 和naturalOrder().reversed()方法类似                          |
+| comparing      | Y      | 返回一个Comparator对象，该对象提供了一个函数可以提取排序关键字。 |
+| reversed       | N      | 返回逆序排序之后的Comparator对象                             |
+| thenComparing  | N      | 当两个对象相同时，返回使用另一个Comparator进行比较的Comparator对象。 |
+

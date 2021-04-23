@@ -75,8 +75,6 @@ Map存储双列数据。map实现类有5个，为Hashtable、Properties、HashMa
   String password = pros.getProperty("password");
   ```
 
-  
-
 * 常用方法
 
   1. 添加：put(Object key,Object value) putAll(Map m)
@@ -88,3 +86,12 @@ Map存储双列数据。map实现类有5个，为Hashtable、Properties、HashMa
      * 遍历key：keySet()
      * 遍历value：values()
      * 遍历key-value：entrySet()
+  
+* jdk8新增方法
+
+  | 方法              | 说明                                                         |
+  | ----------------- | ------------------------------------------------------------ |
+  | getOrDefault()    | 如果Map中不存在这样的键映射，可以提供一个默认值，方法会返回该默认值。 |
+  | computeIfAbsent() | 如果Map中不存在这样的键映射，可以提供一个默认值，方法会将键和值添加到map中，返回该默认值。 |
+
+  
