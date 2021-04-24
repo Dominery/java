@@ -19,7 +19,6 @@
         * [多态](doc/object_oriented/attributes/polymorphism.md)
 * [异常处理](doc/exception_handling/README.md)
     * [异常体系](doc/exception_handling/exceptionsystem.md)
-    * [常见异常](doc/exception_handling/exception.md)
     * [处理异常](doc/exception_handling/exceptiondeal.md)
     * [抛出异常](doc/exception_handling/throw.md)
     * [定义异常](doc/exception_handling/selfexception.md)
