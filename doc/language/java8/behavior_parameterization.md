@@ -99,7 +99,7 @@ public static ArrayList<Person> selectPeople(ArrayList<Person> people,PersonPred
    }));
    ```
 
-   然而这种实现也重复了很多，为了一个方法，不得不写许多格式化代码。
+   然而这种实现也重复了很多，为了一个方法，不得不写许多格式化代码，而且很难阅读掩盖了程序员的意图。
 
 3. lambda
 
