@@ -85,7 +85,7 @@ CompletableFuture类（它实现了Future接口）利用Java 8的新特性以更
 
     如果计算过程中产生了错误，用于提示错误的异常会被限制在试图计算商品价格的当前线程的范围内，最终会杀死该线程，而这会导致等待get方法返回结果的客户端永久地被阻塞。客户端可以使用重载版本的get方法，它使用一个超时参数来避免发生这样的情况。
 
-    为了让客户端能了解商店无法提供请求商品价格的原因，你需要使用CompletableFuture的completeExceptionally方法将导致CompletableFuture内发生问题的异常抛出。
+    为了让客户端能了原因，你需要使用CompletableFuture的completeExceptionally方法将导致CompletableFuture内发生问题的异常抛出。
 
 #### 使用工厂方法创建
 

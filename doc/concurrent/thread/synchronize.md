@@ -65,10 +65,22 @@
        }
    }
    ```
-
-从jdk5.0开始，java提供锁对象来实现同步。`java.util.concurrent.locks.Lock`接口是控制多个线程对共享资源进行访问的工具。
-
-`ReentrantLock`类实现`Lock`，在线程安全的控制中，经常被使用。
+   
+   从jdk5.0开始，java提供锁对象来实现同步。`java.util.concurrent.locks.Lock`接口是控制多个线程对共享资源进行访问的工具。
+   
+   `ReentrantLock`类实现`Lock`，在线程安全的控制中，经常被使用。
+   
+   **锁测试**
+   
+   线程在调用lock方法来获得另一个线程所持有的锁的时候，很可能发生阻塞。tryLock方法试图申请一个锁，在成功获得锁后返回true，否则，立即返回false。可以对该方法传递超时参数。
+   
+   **读/写锁**
+   
+   java.util.concurrent.locks包定义了两个锁类，ReentrantLock类和ReentrantReadWriteLock类。如果很多线程从一个数据结构读取数据而很少线程修改其中数据的话，可以使用后者。
+   
+   1. 创建锁对象
+   2. 获取读写锁
+   3. 对获取方法加读锁，对修改方法加写锁
 
 `synchronized`和`Lock`的异同：
 
@@ -126,3 +138,13 @@
 1. 避免锁的嵌套
 2. 减少同步资源的定义
 3. 算法
+
+### 线程局部变量
+
+如果在线程中要避免共享变量，那么需要使用ThreadLocal辅助类为各个线程提供各自的实例。。
+
+```java
+ThreadLocal<SimpleDateFormat> dateFormat = ThreadLocal.withInitial(()->new SimpleDateFormat("yyyy-MM-dd"));
+```
+
+在一个给定线程中首次调用get时，会调用initialValue方法。在此之后，get方法会返回属于当前线程的那个实例。
