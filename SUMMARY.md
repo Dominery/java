@@ -4,7 +4,7 @@
 * [Java语言](doc/language/README.md)
     * [基础](doc/language/base/README.md)
         * [数据类型](doc/language/base/datatype.md)
-        * [表达式与运算符](doc/language/base/expression.md)
+        * [变量与运算符](doc/language/base/operator.md)
         * [流程控制](doc/language/base/processcontrol.md)
         * [数组](doc/language/base/array.md)
     * [面向对象](doc/language/object_oriented/README.md)
