@@ -30,6 +30,16 @@ try{
 }
 ```
 
+使用Future的第二种是使用FutureTask具体实现类，FutureTask包装器是一种非常便利的机制，可将Callable转换成Future和Runnable，它同时实现二者的接口。将FutureTask对象提交给一个线程，启动线程后开始运算。
+
+#### 接口方法
+
+| 方法     | 说明                                                         |
+| -------- | ------------------------------------------------------------ |
+| get()    | 阻塞直至计算完成，如果中断，抛出InterruptedException。可以传入超时参数，如果运算超时，抛出TimeoutException。 |
+| isDone() | 如果计算未完成，返回false，否则返回true                      |
+| cancel() | 如果计算还没有开始，它被取消且不再开始。                     |
+
 ### 局限性
 
 Future很难实现下述操作：
@@ -52,7 +62,7 @@ CompletableFuture类（它实现了Future接口）利用Java 8的新特性以更
 
 * 将同步方法转换为异步方法
 
-    在方法名称后添加Async，修改返回值为Future\<T>类型。
+    在方法名称后添加Async，修改返回值为Future\&lt;T>类型。
 
     Future是一个暂时还不可知值的处理器，这个值在计算完成后，可以通过调用它的get方法取得。因为这样的设计，getPriceAsync方法才能立刻返回，给调用线程一个机会，能在同一时间去执行其他有价值的计算任务。
 
@@ -150,13 +160,62 @@ supplyAsync方法接受一个生产者（Supplier）作为参数，返回一个C
 
 CompletableFuture提供了类似Stream API的方法结合多个异步操作，以流水线方式运行。
 
-| 方法        | 说明                                                         |
-| ----------- | ------------------------------------------------------------ |
-| thenApply   | thenApply方法接收一个Function函数式接口，并将其应用到Future的值中，返回一个包裹Function返回值的CompletableFuture对象。 |
-| thenCompose | thenCompose方法允许你对两个异步操作进行流水线，第一个操作完成时，将其结果作为参数传递给第二个操作。 |
-| thenCombine | 接收名为BiFunction的第二参数，这个参数定义了当两个CompletableFuture对象完成计算后，结果如何合并。 |
+#### CompletableFuture&lt;T>对象增加动作
 
-通常而言，名称中不带Async的方法和它的前一个任务一样，在同一个线程中运行；而名称以Async结尾的方法会将后续的任务提交到一个线程池，所以每个任务是由不同的线程处理的。
+| 方法         | 参数                       | 说明                             |
+| ------------ | -------------------------- | -------------------------------- |
+| thenApply    | T->U                       | 对结果应用一个函数               |
+| thenCompose  | T->CompletableFuture&lt;U> | 对结果调用函数并执行返回的future |
+| handle       | (T,Throwable)->U           | 处理结果或错误                   |
+| thenAccept   | T->void                    | 类似thenApply                    |
+| whenComplete | (T,Throwable)->void        | 类似于handle                     |
+| thenRun      | Runnable                   | 执行Runable                      |
+
+通常而言，名称中不带Async的方法和它的前一个任务一样，在同一个线程中运行；而名称以Async结尾的方法会将后续的任务提交到一个线程池，由不同的线程处理的。
+
+* thenCompose
+
+  如果有两个函数T -> CompletableFuture&lt;U>和U ->CompletableFuture&lt;V>，希望第二个函数在第一个函数完成时调用，可以通过thenCompose将它们组合为一个函数T ->CompletableFuture&lt;V>。
+
+* handle
+
+  CompletableFuture中抛出一个异常时，会捕获这个异常并在调用get方法时包装在一个受查异常ExecutionException中。
+
+#### 组合多个对象
+
+| 方法           | 参数                                | 说明                             |
+| -------------- | ----------------------------------- | -------------------------------- |
+| thenCombine    | CompletableFuture&lt;U>,(T,U)->V    | 执行两个动作并用给定函数组合结果 |
+| thenAcceptBoth | CompletableFuture&lt;U>,(T,U)->void | 类似thenCombine                  |
+| runAfterBoth   | CompletableFuture&lt;?>,Runnable    | 两个都完成后执行runnable         |
+| applyToEither  | CompletableFuture&lt;T>,T->V        | 得到其中一个结果时，传入给定函数 |
+| acceptEither   | CompletableFuture&lt;T>,T->void     | 类似applyToEither                |
+| runAfterEither | CompletableFuture&lt;?>,Runnable    | 其中一个完成后执行runnable       |
+| static allOf   | CompletableFuture&lt;?>...          | 所有给定future都完成后完成后     |
+| static anyOf   | CompletableFuture&lt;?>...          | 任意给定future完成后完成         |
+
+前3个方法并行运行一个CompletableFuture&lt;T>和一个CompletableFuture&lt;U>动作，并组合结果。
+
+接下来3个方法并行运行两个CompletableFuture&lt;T>动作。一旦其中一个动作完成，就传递它的结果，并忽略另一个结果。
+
+最后的静态allOf和anyOf方法取一组可完成future（数目可变），并生成一个CompletableFuture&lt;Void>，它会在所有这些future都完成时或者其中任意一个future完成时结束。不会传递任何结果。
+
+* 等待所有任务执行完成
+
+  allOf工厂方法接收一个由CompletableFuture构成的数组，数组中的所有Completable-Future对象执行完成之后，它返回一个CompletableFuture&lt;Void>对象。对allOf方法返回的CompletableFuture执行join操作，会阻塞主线程等待所有对象执行完成。
+
+    ```java
+    CompletableFuture[] futures = findPricesStream("myPhone")
+                                    .map(f->f.thenAccept(System.out::println))
+                                    .toArray(size->new CompletableFuture[size]);
+    COmpletableFuture.allOf(futures).join();
+    ```
+
+* 只需要一个任务执行完成
+
+  anyOf方法接收一个CompletableFuture对象构成的数组，返回由第一个执行完毕的CompletableFuture对象的返回值构成的Completable-Future&lt;Object>。
+
+#### 示例程序
 
 ```java
 public List<String> findPrice(String product){
@@ -183,25 +242,6 @@ Future<Double> futurePriceInUSD =
         	(price,rate)->price*rate)
 );
 ```
-
-### 响应Completion事件
-
-在每个CompletableFuture上注册一个操作，该操作会在CompletableFuture完成执行后使用它的返回值。Java 8的CompletableFuture通过thenAccept方法提供了这一功能，它接收CompletableFuture执行完毕后的返回值做参数，返回一个CompletableFuture\<Void>。
-
-#### 等待所有任务执行完成
-
-allOf工厂方法接收一个由CompletableFuture构成的数组，数组中的所有Completable-Future对象执行完成之后，它返回一个CompletableFuture\<Void>对象。对allOf方法返回的CompletableFuture执行join操作，会阻塞主线程等待所有对象执行完成。
-
-```java
-CompletableFuture[] futures = findPricesStream("myPhone")
-    							.map(f->f.thenAccept(System.out::println))
-    							.toArray(size->new CompletableFuture[size]);
-COmpletableFuture.allOf(futures).join();
-```
-
-#### 只需要一个任务执行完成
-
-anyOf方法接收一个CompletableFuture对象构成的数组，返回由第一个执行完毕的CompletableFuture对象的返回值构成的Completable-Future\<Object>。
 
 
 
